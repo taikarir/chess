@@ -10,6 +10,45 @@ class Piece {
         this.px=px;
         this.py=py;
     }
+    possiblemoves() {
+        this.possmoves=[];
+        if (this.type=="king") {
+            if (this.py>0) {
+                this.possmoves.push([this.px+1,this.py]);
+                if (this.px>0) {
+                    this.possmoves.push([this.px,this.py]);
+                }   
+                if (this.px<7) {
+                    this.possmoves.push([this.px+2,this.py]);
+                }   
+            }   
+            if (this.py<7) {
+                this.possmoves.push([this.px+1,this.py+2]);
+                if (this.px>0) {
+                    this.possmoves.push([this.px,this.py+2]);
+                }   
+                if (this.px<7) {
+                    this.possmoves.push([this.px+2,this.py+2]);
+                }   
+            }   
+            if (this.px<7) {
+                this.possmoves.push([this.px+2,this.py+1]);
+            }   
+            if (this.px>0) {
+                this.possmoves.push([this.px,this.py+1]);
+            }   
+        } else if (this.type=="rook") {
+            for (var i=0;i<8;i++) {
+                if (i!=this.px) {
+                    this.possmoves.push([i+1,this.py+1]);
+                }   
+                if (i!=this.py) {
+                    this.possmoves.push([this.px+1,i+1]);
+                }   
+            }   
+        }
+        return this.possmoves;
+    }   
     draw() {
         if (this.color=="black") {
             fill(0,0,0);
