@@ -44,21 +44,22 @@ class Piece {
         }
         return this.possmoves;
     }
-    /*showmoves() {
+    showmoves() {
         var x=this.possiblemoves();
         for (var i=0;i<x.length;i++) {
             fill(255,0,0);
             ellipse((x[i][0]+0.5)*TILESIZE,(7.5-x[i][1])*TILESIZE,TILESIZE*0.3,TILESIZE*0.3);
         }
-    }*/
+    }
     draw() {
-        if (this.color=="b") {
-            fill(0,0,0);
-            stroke(255,255,255);
-        } else if (this.color=="w") {
-            fill(255,255,255);
-            stroke(0,0,0);
+        if (this.type!=" ") {
+            if (this.color=="b") {
+                fill(255,255,255);
+                noStroke();
+                rect((this.px+0.5)*TILESIZE-30,(this.py+0.5)*TILESIZE-30,60,60);
+            }
+            var thisimg=imgs[this.color+this.type];
+            image(thisimg,(this.px+0.5)*TILESIZE-thisimg.width/2,(this.py+0.5)*TILESIZE-thisimg.height/2);
         }
-        text(ptype[this.type],this.px*TILESIZE+TILESIZE/2,this.py*TILESIZE+TILESIZE/2)
     }
 }
