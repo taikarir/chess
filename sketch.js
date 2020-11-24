@@ -54,6 +54,9 @@ function draw() {
             pieces[i][j].draw();
         }
     }
+    if (heldpiece!="") { 
+        heldpiece.showmoves();
+    }
 }
 function mousePressed() {
     if (heldpiece=="") {

@@ -7,7 +7,7 @@ class Piece {
     }
     possiblemoves() {
         this.possmoves=[];
-        if (this.type=="king") {
+        if (this.type=="k") {
             if (this.py>0) {
                 this.possmoves.push([this.px,this.py-1]);
                 if (this.px>0) {
@@ -32,7 +32,7 @@ class Piece {
             if (this.px>0) {
                 this.possmoves.push([this.px-1,this.py]);
             }   
-        } else if (this.type=="rook") {
+        } else if (this.type=="r") {
             for (var i=0;i<8;i++) {
                 if (i!=this.px) {
                     this.possmoves.push([i,this.py]);
@@ -47,8 +47,9 @@ class Piece {
     showmoves() {
         var x=this.possiblemoves();
         for (var i=0;i<x.length;i++) {
-            fill(255,0,0);
-            ellipse((x[i][0]+0.5)*TILESIZE,(7.5-x[i][1])*TILESIZE,TILESIZE*0.3,TILESIZE*0.3);
+            fill(0,255,0,200);
+            noStroke();
+            ellipse((x[i][0]+0.5)*TILESIZE,(0.5+x[i][1])*TILESIZE,TILESIZE*0.3,TILESIZE*0.3);
         }
     }
     draw() {
