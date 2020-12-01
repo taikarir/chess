@@ -5,6 +5,75 @@ class Piece {
         this.px=px;
         this.py=py;
     }
+    bishopmoves() {
+        var posy=this.py;
+        if (this.py<7) {
+            if (this.px<7) {
+                posy=this.py+1;
+                for (var i=this.px+1;i<=7;i++) {
+                    if (pieces[posy][i].color==this.color) {break;}
+                    this.possmoves.push([i,posy]);
+                    if (gamestate[posy][i]!="  ") {break;}
+                    posy+=1;
+                    if (posy>7) {break;}
+                }
+            }
+            if (this.px>0) {
+                posy=this.py+1;
+                for (var i=this.px-1;i>=0;i--) {
+                    if (pieces[posy][i].color==this.color) {break;}
+                    this.possmoves.push([i,posy]);
+                    if (gamestate[posy][i]!="  ") {break;}
+                    posy+=1;
+                    if (posy>7) {break;}
+                }
+            }
+        }
+        if (this.py>0) {
+            if (this.px<7) {
+                posy=this.py-1;
+                for (var i=this.px+1;i<=7;i++) {
+                    if (pieces[posy][i].color==this.color) {break;}
+                    this.possmoves.push([i,posy]);
+                    if (gamestate[posy][i]!="  ") {break;}
+                    posy-=1;
+                    if (posy<0) {break;}
+                }
+            }
+            if (this.px>0) {
+                posy=this.py-1;
+                for (var i=this.px-1;i>=0;i--) {
+                    if (pieces[posy][i].color==this.color) {break;}
+                    this.possmoves.push([i,posy]);
+                    if (gamestate[posy][i]!="  ") {break;}
+                    posy-=1;
+                    if (posy<0) {break;}
+                }
+            }
+        }
+    }
+    rookmoves() {
+        for (var i=this.px+1;i<=7;i++) {
+            if (pieces[this.py][i].color==this.color) {break;}
+            this.possmoves.push([i,this.py]);
+            if (gamestate[this.py][i]!="  ") {break;}
+        }
+        for (var i=this.px-1;i>=0;i--) {
+            if (pieces[this.py][i].color==this.color) {break;}
+            this.possmoves.push([i,this.py]);
+            if (gamestate[this.py][i]!="  ") {break;}
+        }
+        for (var i=this.py+1;i<=7;i++) {
+            if (pieces[i][this.px].color==this.color) {break;}
+            this.possmoves.push([this.px,i]);
+            if (gamestate[i][this.px]!="  ") {break;}
+        }
+        for (var i=this.py-1;i>=0;i--) {
+            if (pieces[i][this.px].color==this.color) {break;}
+            this.possmoves.push([this.px,i]);
+            if (gamestate[i][this.px]!="  ") {break;}
+        }
+    }
     possiblemoves() {
         this.possmoves=[];
         if (this.type=="k") {
@@ -12,44 +81,20 @@ class Piece {
                 for (var j=0;j<8;j++) {
                     if (abs(i-this.px)<=1 && abs(j-this.py)<=1) {
                         if (j==this.py && i==this.px) {} else {
-                            this.possmoves.push([i,j]);
+                            if (pieces[j][i].color!=this.color) {
+                                this.possmoves.push([i,j]);
+                            }
                         }
                     }
                 }
             }
         } else if (this.type=="r") {
-            for (var i=0;i<8;i++) {
-                if (i!=this.px) {
-                    this.possmoves.push([i,this.py]);
-                }   
-                if (i!=this.py) {
-                    this.possmoves.push([this.px,i]);
-                }   
-            }   
+            this.rookmoves();
         } else if (this.type=="b") {
-            for (var i=0;i<8;i++) {
-                for (var j=0;j<8;j++) {
-                    if ((i-this.px)==(j-this.py) || (i-this.px)==(this.py-j)) {
-                        this.possmoves.push([i,j]);
-                    }
-                }
-            }
+            this.bishopmoves();
         } else if (this.type=="q") {
-            for (var i=0;i<8;i++) {
-                if (i!=this.px) {
-                    this.possmoves.push([i,this.py]);
-                }   
-                if (i!=this.py) {
-                    this.possmoves.push([this.px,i]);
-                }   
-            }   
-            for (var i=0;i<8;i++) {
-                for (var j=0;j<8;j++) {
-                    if ((i-this.px)==(j-this.py) || (i-this.px)==(this.py-j)) {
-                        this.possmoves.push([i,j]);
-                    }
-                }
-            }
+            this.rookmoves();
+            this.bishopmoves();
         } else if (this.type=="n") {
             for (var i=0;i<8;i++) {
                 for (var j=0;j<8;j++) {
@@ -66,11 +111,15 @@ class Piece {
                         this.possmoves.push([this.px,this.py-2]);
                     }
                 }
-                if (pieces[this.py-1][this.px-1].color=="b") {
-                    this.possmoves.push([this.px-1,this.py-1]);
+                if (this.px>0) {
+                   if (pieces[this.py-1][this.px-1].color=="b") {
+                        this.possmoves.push([this.px-1,this.py-1]);
+                    }
                 }
-                if (pieces[this.py-1][this.px+1].color=="b") {
-                    this.possmoves.push([this.px+1,this.py-1]);
+                if (this.px<7) {
+                    if (pieces[this.py-1][this.px+1].color=="b") {
+                        this.possmoves.push([this.px+1,this.py-1]);
+                    }
                 }
             } else if (this.color=="b") {
                 if (gamestate[this.py+1][this.px]=="  ") {
@@ -79,11 +128,15 @@ class Piece {
                         this.possmoves.push([this.px,this.py+2]);
                     }
                 }
-                if (pieces[this.py+1][this.px-1].color=="w") {
-                    this.possmoves.push([this.px-1,this.py+1]);
+                if (this.px>0) {
+                    if (pieces[this.py+1][this.px-1].color=="w") {
+                        this.possmoves.push([this.px-1,this.py+1]);
+                    }
                 }
-                if (pieces[this.py+1][this.px+1].color=="w") {
-                    this.possmoves.push([this.px+1,this.py+1]);
+                if (this.px<7) {
+                   if (pieces[this.py+1][this.px+1].color=="w") {
+                        this.possmoves.push([this.px+1,this.py+1]);
+                    }
                 }
             }
         }
@@ -102,10 +155,10 @@ class Piece {
             if (this.color=="b") {
                 fill(255,255,255);
                 noStroke();
-                rect((this.px+0.5)*TILESIZE-30,(this.py+0.5)*TILESIZE-30,60,60);
+                rect((this.px+0.5)*TILESIZE-33,(this.py+0.5)*TILESIZE-33,66,66);
             }
             var thisimg=imgs[this.color+this.type];
-            image(thisimg,(this.px+0.5)*TILESIZE-thisimg.width/2,(this.py+0.5)*TILESIZE-thisimg.height/2);
+            image(thisimg,(this.px+0.5)*TILESIZE-40,(this.py+0.5)*TILESIZE-40,80,80);
         }
     }
 }

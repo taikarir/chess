@@ -60,12 +60,30 @@ function draw() {
 }
 function mousePressed() {
     if (heldpiece=="") {
-        if (pieces[floor(mouseY/TILESIZE)][floor(mouseX/TILESIZE)].type!=" ") {
-            heldpiece=pieces[floor(mouseY/TILESIZE)][floor(mouseX/TILESIZE)];
+        var startp=[floor(mouseY/TILESIZE),floor(mouseX/TILESIZE)];
+        if (pieces[startp[0]][startp[1]].type!=" ") {
+            heldpiece=pieces[startp[0]][startp[1]];
         }
     } else {
-        gamestate[heldpiece.py][heldpiece.px]="  ";
-        gamestate[floor(mouseY/TILESIZE)][floor(mouseX/TILESIZE)]=heldpiece.color+heldpiece.type;
+        var endp=[floor(mouseX/TILESIZE),floor(mouseY/TILESIZE)];
+        var poss=heldpiece.possiblemoves();
+        var includes;
+        for (var i=0;i<poss.length;i++) {
+            includes=0;
+            for (var j=0;j<poss[i].length;j++) {
+                if (poss[i][j]==endp[j]) {
+                    includes+=1;
+                }
+            }
+            if (includes==2) {
+                break;
+            }
+        }
+        if (includes==2) {
+            gamestate[heldpiece.py][heldpiece.px]="  ";
+            gamestate[endp[1]][endp[0]]=heldpiece.color+heldpiece.type;
+        }
         heldpiece="";
+        pieces=[];
     }
 }
