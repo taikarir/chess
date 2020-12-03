@@ -99,7 +99,9 @@ class Piece {
             for (var i=0;i<8;i++) {
                 for (var j=0;j<8;j++) {
                     if ((abs(i-this.px)==2 && abs(j-this.py)==1) || (abs(i-this.px)==1 && abs(j-this.py)==2)) {
-                        this.possmoves.push([i,j]);
+                        if (pieces[j][i].color!=this.color) {
+                            this.possmoves.push([i,j]);
+                        }
                     }
                 }
             }
@@ -141,6 +143,22 @@ class Piece {
             }
         }
         return this.possmoves;
+    }
+    isincheck() {
+        for (var ii=0;ii<8;ii++) {
+            for (var jj=0;jj<8;jj++) {
+                var pm=pieces[ii][jj].possiblemoves();
+                for (var z=0;z<pm.length;z++) {
+                    if (pm[z][1]==this.px && pm[z][0]==this.py) {
+                        fill(255,0,0,200);
+                        noStroke();
+                        ellipse((pm[z][0]+0.5)*TILESIZE,(0.5+pm[z][1])*TILESIZE,TILESIZE*0.3,TILESIZE*0.3);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
     showmoves() {
         var x=this.possiblemoves();

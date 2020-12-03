@@ -54,6 +54,13 @@ function draw() {
             pieces[i][j].draw();
         }
     }
+    for (var i=0;i<pieces.length;i++) {
+        for (var j=0;j<pieces[i].length;j++) {
+            if (gamestate[j][i][1]=="k") {
+                pieces[i][j].isincheck();
+            }
+        }
+    }
     if (heldpiece!="") { 
         heldpiece.showmoves();
     }
