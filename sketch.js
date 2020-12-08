@@ -94,3 +94,10 @@ function mousePressed() {
         pieces=[];
     }
 }
+function movepiece(x,y) {
+    var pc=gamestate[x[1]][x[0]];
+    if (pc!="  ") {
+        gamestate[y[1]][y[0]]=pc;
+        gamestate[x[1]][x[0]]="  ";
+    }
+}
