@@ -107,6 +107,9 @@ class Piece {
             }
         } else if (this.type=="p") {
             if (this.color=="w") {
+                if (this.py==0) {
+                    return [];
+                }
                 if (gamestate[this.py-1][this.px]=="  ") {
                     this.possmoves.push([this.px,this.py-1]);
                     if (gamestate[this.py-2][this.px]=="  " && this.py==6) {
@@ -124,6 +127,9 @@ class Piece {
                     }
                 }
             } else if (this.color=="b") {
+                if (this.py==7) {
+                    return [];
+                }
                 if (gamestate[this.py+1][this.px]=="  ") {
                     this.possmoves.push([this.px,this.py+1]);
                     if (gamestate[this.py+2][this.px]=="  " && this.py==1) {
@@ -170,11 +176,6 @@ class Piece {
     }
     draw() {
         if (this.type!=" ") {
-            if (this.color=="b") {
-                fill(255,255,255);
-                noStroke();
-                rect((this.px+0.5)*TILESIZE-33,(this.py+0.5)*TILESIZE-33,66,66);
-            }
             var thisimg=imgs[this.color+this.type];
             image(thisimg,(this.px+0.5)*TILESIZE-40,(this.py+0.5)*TILESIZE-40,80,80);
         }
