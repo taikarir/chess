@@ -65,6 +65,11 @@ function draw() {
     if (heldpiece!="") { 
         heldpiece.showmoves();
     }
+    if (promote[0]!=0) {
+        fill(100,100,100,200);
+        noStroke();
+        rect(0,0,BOARDSIZE,BOARDSIZE);
+    }
     if (promote[0]==1) {
         image(imgs["wq"],(heldpiece.px+0.5)*TILESIZE-40,0.5*TILESIZE-40,80,80);
         image(imgs["wr"],(heldpiece.px+0.5)*TILESIZE-40,1.5*TILESIZE-40,80,80);
@@ -76,9 +81,29 @@ function draw() {
         image(imgs["bb"],(heldpiece.px+0.5)*TILESIZE-40,5.5*TILESIZE-40,80,80);
         image(imgs["bn"],(heldpiece.px+0.5)*TILESIZE-40,4.5*TILESIZE-40,80,80);
     }
+    if (mouseX<0 || mouseY<0 || mouseX>BOARDSIZE || mouseY>BOARDSIZE) {
+    } else if (heldpiece=="" && pieces[floor(mouseY/TILESIZE)][floor(mouseX/TILESIZE)].type!=" ") {
+        cursor(HAND);
+    } else if (heldpiece!="") {
+        var hop=0;
+        var possi=heldpiece.possiblemoves();
+        for (var i=0;i<possi.length;i++) {
+            if (possi[i][1]==floor(mouseY/TILESIZE) && possi[i][0]==floor(mouseX/TILESIZE)) {
+                cursor(HAND);
+                hop=1;
+                break;
+            }
+        }
+        if (hop==0) {
+            cursor(ARROW);
+        }
+    } else {
+        cursor(ARROW);
+    }
 }
 function mousePressed() {
-    if (heldpiece=="") {
+    if (mouseX<0 || mouseY<0 || mouseX>BOARDSIZE || mouseY>BOARDSIZE) {
+    } else if (heldpiece=="") {
         var startp=[floor(mouseY/TILESIZE),floor(mouseX/TILESIZE)];
         if (pieces[startp[0]][startp[1]].type!=" ") {
             heldpiece=pieces[startp[0]][startp[1]];
@@ -125,6 +150,7 @@ function mousePressed() {
                 }
                 gamestate[heldpiece.py][heldpiece.px]="  ";
                 gamestate[promote[2][1]][promote[2][0]]=heldpiece.color+promoted;
+                promote=[0,0,0];
             }
             heldpiece="";
             pieces=[];
