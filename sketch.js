@@ -1,18 +1,20 @@
 const BOARDSIZE=720;
 const TILESIZE=BOARDSIZE/8;
 const ptype={"k":"king","q":"queen","r":"rook","b":"bishop","n":"knight","p":"pawn"};
-var gamestate=[["br","bn","bb","bq","bk","bb","bn","br"],
+var gamestate=[["br","  ","  ","  ","bk","  ","  ","br"],
                ["bp","bp","bp","bp","bp","bp","bp","bp"],
                ["  ","  ","  ","  ","  ","  ","  ","  "],
                ["  ","  ","  ","  ","  ","  ","  ","  "],
                ["  ","  ","  ","  ","  ","  ","  ","  "],
                ["  ","  ","  ","  ","  ","  ","  ","  "],
                ["wp","wp","wp","wp","wp","wp","wp","wp"],
-               ["wr","wn","wb","wq","wk","wb","wn","wr"]];
+               ["wr","  ","  ","  ","wk","  ","  ","wr"]];
 var pieces=[];
 var heldpiece="";
 var promote=[0,0,0];
 var br;var wr;var bp;var wp;var bq;var wq;var bk;var wk;var wn;var bn;var wb;var bb;var imgs;
+var wkm=0;var bkm=0;var awrm=0;var hwrm=0;var abrm=0;var hbrm=0;
+var mousex=0;var mousey=0;
 function setup() {
     createCanvas(BOARDSIZE,BOARDSIZE);
     textSize(32);
@@ -81,14 +83,14 @@ function draw() {
         image(imgs["bb"],(heldpiece.px+0.5)*TILESIZE-40,5.5*TILESIZE-40,80,80);
         image(imgs["bn"],(heldpiece.px+0.5)*TILESIZE-40,4.5*TILESIZE-40,80,80);
     }
-    if (mouseX<0 || mouseY<0 || mouseX>BOARDSIZE || mouseY>BOARDSIZE) {
-    } else if (heldpiece=="" && pieces[floor(mouseY/TILESIZE)][floor(mouseX/TILESIZE)].type!=" ") {
+    mousex=mouseX;mousey=mouseY;
+    if (mousex>=0 && mousey>=0 && mousex<BOARDSIZE && mousey<BOARDSIZE && heldpiece=="" && pieces[floor(mousey/TILESIZE)][floor(mousex/TILESIZE)].type!=" ") {
         cursor(HAND);
     } else if (heldpiece!="") {
         var hop=0;
         var possi=heldpiece.possiblemoves();
         for (var i=0;i<possi.length;i++) {
-            if (possi[i][1]==floor(mouseY/TILESIZE) && possi[i][0]==floor(mouseX/TILESIZE)) {
+            if (possi[i][1]==floor(mousey/TILESIZE) && possi[i][0]==floor(mousex/TILESIZE)) {
                 cursor(HAND);
                 hop=1;
                 break;
@@ -102,17 +104,22 @@ function draw() {
     }
 }
 function mousePressed() {
-    if (mouseX<0 || mouseY<0 || mouseX>BOARDSIZE || mouseY>BOARDSIZE) {
-    } else if (heldpiece=="") {
+    if (mousex>=0 && mousey>=0 && mousex<BOARDSIZE && mousey<BOARDSIZE && heldpiece=="") {
         var startp=[floor(mouseY/TILESIZE),floor(mouseX/TILESIZE)];
         if (pieces[startp[0]][startp[1]].type!=" ") {
             heldpiece=pieces[startp[0]][startp[1]];
             promote=[0,0,0];
         }
-    } else {
+    }
+}
+function mouseReleased() {
+    if (mousex>=0 && mousey>=0 && mousex<BOARDSIZE && mousey<BOARDSIZE && heldpiece!="") {
         if (promote[0]==0) {
             var endp=[floor(mouseX/TILESIZE),floor(mouseY/TILESIZE)];
             var poss=heldpiece.possiblemoves();
+            if (endp[0]==heldpiece.px && endp[1]==heldpiece.py) {
+                return;
+            }
             var includes;
             for (var i=0;i<poss.length;i++) {
                 includes=0;
@@ -133,6 +140,64 @@ function mousePressed() {
                     } else if (endp[1]==7) {
                         promote=[2,heldpiece,endp];
                         return;
+                    }
+                }
+                if (heldpiece.type=="r") {
+                    if (heldpiece.color=="w") {
+                        if (heldpiece.px==7) {
+                            hwrm=1;
+                        } else if (heldpiece.px==0) {
+                            awrm=1;
+                        }
+                    } else if (heldpiece.color=="b") {
+                        if (heldpiece.px==7) {
+                            hbrm=1;
+                        } else if (heldpiece.px==0) {
+                            awrm=1;
+                        }
+                    }
+                } else if (heldpiece.type=="k") {
+                    if (heldpiece.color=="w" && wkm==0) {
+                        if (endp[1]==7 && endp[0]==6) {
+                            gamestate[7][7]="  ";
+                            gamestate[7][6]="wk";
+                            gamestate[7][5]="wr";
+                            gamestate[7][4]="  ";
+            heldpiece="";
+            pieces=[];
+                            return;
+                        } else if (endp[1]==7 && endp[0]==2) {
+                            gamestate[7][0]="  ";
+                            gamestate[7][1]="  ";
+                            gamestate[7][2]="wr";
+                            gamestate[7][3]="wk";
+                            gamestate[7][4]="  ";
+            heldpiece="";
+            pieces=[];
+                            return;
+                        }
+                        wkm=1;
+                    }
+                    else if (heldpiece.color=="b" && bkm==0) {
+                        if (endp[1]==0 && endp[0]==6) {
+                            gamestate[0][7]="  ";
+                            gamestate[0][6]="bk";
+                            gamestate[0][5]="br";
+                            gamestate[0][4]="  ";
+            heldpiece="";
+            pieces=[];
+                            return;
+                        } else if (endp[1]==0 && endp[0]==2) {
+                            gamestate[0][0]="  ";
+                            gamestate[0][1]="  ";
+                            gamestate[0][2]="bk";
+                            gamestate[0][3]="br";
+                            gamestate[0][4]="  ";
+            heldpiece="";
+            pieces=[];
+                            return;
+                        }
+                        bkm=1;
                     }
                 }
                 gamestate[heldpiece.py][heldpiece.px]="  ";

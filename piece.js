@@ -88,6 +88,23 @@ class Piece {
                     }
                 }
             }
+            if (this.px==4) {
+                if (this.py==0 && bkm==0) {
+                    if (pieces[0][5].type==" " && pieces[0][6].type==" " && hbrm==0) {
+                        this.possmoves.push([6,0]);
+                    }
+                    if (pieces[0][1].type==" " && pieces[0][2].type==" " && pieces[0][3].type==" " && abrm==0) {
+                        this.possmoves.push([2,0]);
+                    }
+                } else if (this.py==7 && wkm==0) {
+                    if (pieces[7][5].type==" " && pieces[0][6].type==" " && hwrm==0) {
+                        this.possmoves.push([6,7]);
+                    }
+                    if (pieces[7][1].type==" " && pieces[7][2].type==" " && pieces[7][3].type==" " && awrm==0) {
+                        this.possmoves.push([2,7]);
+                    }
+                }
+            }
         } else if (this.type=="r") {
             this.rookmoves();
         } else if (this.type=="b") {
@@ -112,7 +129,7 @@ class Piece {
                 }
                 if (gamestate[this.py-1][this.px]=="  ") {
                     this.possmoves.push([this.px,this.py-1]);
-                    if (gamestate[this.py-2][this.px]=="  " && this.py==6) {
+                    if (this.py==6 && gamestate[this.py-2][this.px]=="  ") {
                         this.possmoves.push([this.px,this.py-2]);
                     }
                 }
@@ -132,7 +149,7 @@ class Piece {
                 }
                 if (gamestate[this.py+1][this.px]=="  ") {
                     this.possmoves.push([this.px,this.py+1]);
-                    if (gamestate[this.py+2][this.px]=="  " && this.py==1) {
+                    if (this.py==1 && gamestate[this.py+2][this.px]=="  ") {
                         this.possmoves.push([this.px,this.py+2]);
                     }
                 }
@@ -168,10 +185,15 @@ class Piece {
     }
     showmoves() {
         var x=this.possiblemoves();
+        fill(0,255,0,200);
+        noStroke();
+        rect(this.px*TILESIZE,this.py*TILESIZE,TILESIZE,TILESIZE);
         for (var i=0;i<x.length;i++) {
-            fill(0,255,0,200);
-            noStroke();
-            ellipse((x[i][0]+0.5)*TILESIZE,(0.5+x[i][1])*TILESIZE,TILESIZE*0.3,TILESIZE*0.3);
+            if (floor(mouseX/TILESIZE)==x[i][0] && floor(mouseY/TILESIZE)==x[i][1]) {
+                rect(x[i][0]*TILESIZE,x[i][1]*TILESIZE,TILESIZE,TILESIZE);
+            } else {
+                ellipse((x[i][0]+0.5)*TILESIZE,(0.5+x[i][1])*TILESIZE,TILESIZE*0.3,TILESIZE*0.3);
+            }
         }
     }
     draw() {
