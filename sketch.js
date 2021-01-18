@@ -1,17 +1,20 @@
 const BOARDSIZE=720;
 const TILESIZE=BOARDSIZE/8;
 const ptype={"k":"king","q":"queen","r":"rook","b":"bishop","n":"knight","p":"pawn"};
-var gamestate=[["br","  ","  ","  ","bk","  ","  ","br"],
+var turn=0;
+var gamestate=[["br","bn","bb","bq","bk","bb","bn","br"],
                ["bp","bp","bp","bp","bp","bp","bp","bp"],
                ["  ","  ","  ","  ","  ","  ","  ","  "],
                ["  ","  ","  ","  ","  ","  ","  ","  "],
                ["  ","  ","  ","  ","  ","  ","  ","  "],
                ["  ","  ","  ","  ","  ","  ","  ","  "],
                ["wp","wp","wp","wp","wp","wp","wp","wp"],
-               ["wr","  ","  ","  ","wk","  ","  ","wr"]];
+               ["wr","wn","wb","wq","wk","wb","wn","wr"]];
 var pieces=[];
+var pieces2=[];var game2=[];var bking=0;var wking=0;
 var heldpiece="";
 var promote=[0,0,0];
+var possi;
 var br;var wr;var bp;var wp;var bq;var wq;var bk;var wk;var wn;var bn;var wb;var bb;var imgs;
 var wkm=0;var bkm=0;var awrm=0;var hwrm=0;var abrm=0;var hbrm=0;
 var mousex=0;var mousey=0;
@@ -57,15 +60,8 @@ function draw() {
             pieces[i][j].draw();
         }
     }
-    for (var i=0;i<pieces.length;i++) {
-        for (var j=0;j<pieces[i].length;j++) {
-            if (gamestate[j][i][1]=="k") {
-                pieces[i][j].isincheck();
-            }
-        }
-    }
     if (heldpiece!="") { 
-        heldpiece.showmoves();
+        heldpiece.showmoves(possi);
     }
     if (promote[0]!=0) {
         fill(100,100,100,200);
@@ -73,22 +69,35 @@ function draw() {
         rect(0,0,BOARDSIZE,BOARDSIZE);
     }
     if (promote[0]==1) {
-        image(imgs["wq"],(heldpiece.px+0.5)*TILESIZE-40,0.5*TILESIZE-40,80,80);
-        image(imgs["wr"],(heldpiece.px+0.5)*TILESIZE-40,1.5*TILESIZE-40,80,80);
-        image(imgs["wb"],(heldpiece.px+0.5)*TILESIZE-40,2.5*TILESIZE-40,80,80);
-        image(imgs["wn"],(heldpiece.px+0.5)*TILESIZE-40,3.5*TILESIZE-40,80,80);
+        image(imgs["wq"],(promote[2][0]+0.5)*TILESIZE-40,0.5*TILESIZE-40,80,80);
+        image(imgs["wr"],(promote[2][0]+0.5)*TILESIZE-40,1.5*TILESIZE-40,80,80);
+        image(imgs["wb"],(promote[2][0]+0.5)*TILESIZE-40,2.5*TILESIZE-40,80,80);
+        image(imgs["wn"],(promote[2][0]+0.5)*TILESIZE-40,3.5*TILESIZE-40,80,80);
     } else if (promote[0]==2) {
-        image(imgs["bq"],(heldpiece.px+0.5)*TILESIZE-40,7.5*TILESIZE-40,80,80);
-        image(imgs["br"],(heldpiece.px+0.5)*TILESIZE-40,6.5*TILESIZE-40,80,80);
-        image(imgs["bb"],(heldpiece.px+0.5)*TILESIZE-40,5.5*TILESIZE-40,80,80);
-        image(imgs["bn"],(heldpiece.px+0.5)*TILESIZE-40,4.5*TILESIZE-40,80,80);
+        image(imgs["bq"],(promote[2][0]+0.5)*TILESIZE-40,7.5*TILESIZE-40,80,80);
+        image(imgs["br"],(promote[2][0]+0.5)*TILESIZE-40,6.5*TILESIZE-40,80,80);
+        image(imgs["bb"],(promote[2][0]+0.5)*TILESIZE-40,5.5*TILESIZE-40,80,80);
+        image(imgs["bn"],(promote[2][0]+0.5)*TILESIZE-40,4.5*TILESIZE-40,80,80);
     }
     mousex=mouseX;mousey=mouseY;
+    var hop=0;
     if (mousex>=0 && mousey>=0 && mousex<BOARDSIZE && mousey<BOARDSIZE && heldpiece=="" && pieces[floor(mousey/TILESIZE)][floor(mousex/TILESIZE)].type!=" ") {
         cursor(HAND);
-    } else if (heldpiece!="") {
-        var hop=0;
-        var possi=heldpiece.possiblemoves();
+    } else if (promote[0]==1) {
+        if (floor(mousey/TILESIZE)>=0 && floor(mousey/TILESIZE)<=3 && floor(mousex/TILESIZE)==promote[2][0]) {
+            cursor(HAND);
+            hop=1;
+        } else {
+            cursor(ARROW);
+        }
+    } else if (promote[0]==2) {
+        if (floor(mousey/TILESIZE)<=7 && floor(mousey/TILESIZE)>=4 && floor(mousex/TILESIZE)==promote[2][0]) {
+            cursor(HAND);
+            hop=1;
+        } else {
+            cursor(ARROW);
+        }
+    } else if (heldpiece!="" && hop==0) {
         for (var i=0;i<possi.length;i++) {
             if (possi[i][1]==floor(mousey/TILESIZE) && possi[i][0]==floor(mousex/TILESIZE)) {
                 cursor(HAND);
@@ -106,8 +115,11 @@ function draw() {
 function mousePressed() {
     if (mousex>=0 && mousey>=0 && mousex<BOARDSIZE && mousey<BOARDSIZE && heldpiece=="") {
         var startp=[floor(mouseY/TILESIZE),floor(mouseX/TILESIZE)];
-        if (pieces[startp[0]][startp[1]].type!=" ") {
+        if (pieces[startp[0]][startp[1]].type!=" " && heldpiece=="") {
             heldpiece=pieces[startp[0]][startp[1]];
+            heldpiece.possiblemoves();
+            heldpiece.removemoves();
+            possi=heldpiece.possmoves;
             promote=[0,0,0];
         }
     }
@@ -116,15 +128,14 @@ function mouseReleased() {
     if (mousex>=0 && mousey>=0 && mousex<BOARDSIZE && mousey<BOARDSIZE && heldpiece!="") {
         if (promote[0]==0) {
             var endp=[floor(mouseX/TILESIZE),floor(mouseY/TILESIZE)];
-            var poss=heldpiece.possiblemoves();
             if (endp[0]==heldpiece.px && endp[1]==heldpiece.py) {
                 return;
             }
             var includes;
-            for (var i=0;i<poss.length;i++) {
+            for (var i=0;i<possi.length;i++) {
                 includes=0;
-                for (var j=0;j<poss[i].length;j++) {
-                    if (poss[i][j]==endp[j]) {
+                for (var j=0;j<possi[i].length;j++) {
+                    if (possi[i][j]==endp[j]) {
                         includes+=1;
                     }
                 }
@@ -163,8 +174,9 @@ function mouseReleased() {
                             gamestate[7][6]="wk";
                             gamestate[7][5]="wr";
                             gamestate[7][4]="  ";
-            heldpiece="";
-            pieces=[];
+                            turn+=1;
+                            heldpiece="";
+                            pieces=[];
                             return;
                         } else if (endp[1]==7 && endp[0]==2) {
                             gamestate[7][0]="  ";
@@ -172,8 +184,9 @@ function mouseReleased() {
                             gamestate[7][2]="wr";
                             gamestate[7][3]="wk";
                             gamestate[7][4]="  ";
-            heldpiece="";
-            pieces=[];
+                            turn+=1;
+                            heldpiece="";
+                            pieces=[];
                             return;
                         }
                         wkm=1;
@@ -184,8 +197,9 @@ function mouseReleased() {
                             gamestate[0][6]="bk";
                             gamestate[0][5]="br";
                             gamestate[0][4]="  ";
-            heldpiece="";
-            pieces=[];
+                            turn+=1;
+                            heldpiece="";
+                            pieces=[];
                             return;
                         } else if (endp[1]==0 && endp[0]==2) {
                             gamestate[0][0]="  ";
@@ -193,8 +207,9 @@ function mouseReleased() {
                             gamestate[0][2]="bk";
                             gamestate[0][3]="br";
                             gamestate[0][4]="  ";
-            heldpiece="";
-            pieces=[];
+                            turn+=1;
+                            heldpiece="";
+                            pieces=[];
                             return;
                         }
                         bkm=1;
@@ -202,12 +217,13 @@ function mouseReleased() {
                 }
                 gamestate[heldpiece.py][heldpiece.px]="  ";
                 gamestate[endp[1]][endp[0]]=heldpiece.color+heldpiece.type;
+                turn+=1;
             }
             heldpiece="";
             pieces=[];
         } else {
             promote_options=["q","r","b","n"];
-            if (floor(mouseX/TILESIZE)==heldpiece.px) {
+            if (floor(mouseX/TILESIZE)==promote[2][0]) {
                 if (promote[0]==1) {
                     var promoted=promote_options[floor(mouseY/TILESIZE)];
                 } else if (promote[0]==2) {
@@ -215,8 +231,9 @@ function mouseReleased() {
                 }
                 gamestate[heldpiece.py][heldpiece.px]="  ";
                 gamestate[promote[2][1]][promote[2][0]]=heldpiece.color+promoted;
-                promote=[0,0,0];
+                turn+=1;
             }
+            promote=[0,0,0];
             heldpiece="";
             pieces=[];
         }
