@@ -62,6 +62,7 @@ function draw() {
     }
     if (heldpiece!="") { 
         heldpiece.showmoves(possi);
+        image(heldpiece.color+heldpiece.type,mouseX-30,mouseY-30);
     }
     if (promote[0]!=0) {
         fill(100,100,100,200);
@@ -117,7 +118,6 @@ function mousePressed() {
         var startp=[floor(mouseY/TILESIZE),floor(mouseX/TILESIZE)];
         onpiece = pieces[startp[0]][startp[1]]
         if (onpiece.type!=" ") {
-            image(imgs[onpiece.color+onpiece.type],mouseX,mouseY);
             if (heldpiece=="") {
                 heldpiece=pieces[startp[0]][startp[1]];
                 heldpiece.possiblemoves();
