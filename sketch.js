@@ -62,7 +62,7 @@ function draw() {
     }
     if (heldpiece!="") { 
         heldpiece.showmoves(possi);
-        image(heldpiece.color+heldpiece.type,mouseX-30,mouseY-30);
+        image(imgs[heldpiece.color+heldpiece.type],mouseX-30,mouseY-30);
     }
     if (promote[0]!=0) {
         fill(100,100,100,200);
