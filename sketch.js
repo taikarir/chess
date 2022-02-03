@@ -115,12 +115,16 @@ function draw() {
 function mousePressed() {
     if (mousex>=0 && mousey>=0 && mousex<BOARDSIZE && mousey<BOARDSIZE && heldpiece=="") {
         var startp=[floor(mouseY/TILESIZE),floor(mouseX/TILESIZE)];
-        if (pieces[startp[0]][startp[1]].type!=" " && heldpiece=="") {
-            heldpiece=pieces[startp[0]][startp[1]];
-            heldpiece.possiblemoves();
-            heldpiece.removemoves();
-            possi=heldpiece.possmoves;
-            promote=[0,0,0];
+        onpiece = pieces[startp[0]][startp[1]]
+        if (onpiece.type!=" ") {
+            image(imgs[onpiece.color+onpiece.type],mouseX,mouseY);
+            if (heldpiece=="") {
+                heldpiece=pieces[startp[0]][startp[1]];
+                heldpiece.possiblemoves();
+                heldpiece.removemoves();
+                possi=heldpiece.possmoves;
+                promote=[0,0,0];
+            }
         }
     }
 }
