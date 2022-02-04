@@ -1,5 +1,6 @@
 const BOARDSIZE=720;
 const TILESIZE=BOARDSIZE/8;
+const IMGSIZE=TILESIZE*8/9;
 const ptype={"k":"king","q":"queen","r":"rook","b":"bishop","n":"knight","p":"pawn"};
 var turn=0;
 var gamestate=[["br","bn","bb","bq","bk","bb","bn","br"],
@@ -62,7 +63,7 @@ function draw() {
     }
     if (heldpiece!="") { 
         heldpiece.showmoves(possi);
-        image(imgs[heldpiece.color+heldpiece.type],mouseX-30,mouseY-30);
+        image(imgs[heldpiece.color+heldpiece.type],mouseX-IMGSIZE/2,mouseY-IMGSIZE/2,IMGSIZE,IMGSIZE);
     }
     if (promote[0]!=0) {
         fill(100,100,100,200);
@@ -70,15 +71,15 @@ function draw() {
         rect(0,0,BOARDSIZE,BOARDSIZE);
     }
     if (promote[0]==1) {
-        image(imgs["wq"],(promote[2][0]+0.5)*TILESIZE-40,0.5*TILESIZE-40,80,80);
-        image(imgs["wr"],(promote[2][0]+0.5)*TILESIZE-40,1.5*TILESIZE-40,80,80);
-        image(imgs["wb"],(promote[2][0]+0.5)*TILESIZE-40,2.5*TILESIZE-40,80,80);
-        image(imgs["wn"],(promote[2][0]+0.5)*TILESIZE-40,3.5*TILESIZE-40,80,80);
+        image(imgs["wq"],(promote[2][0]+0.5)*TILESIZE-IMGSIZE/2,0.5*TILESIZE-IMGSIZE/2,IMGSIZE,IMGSIZE);
+        image(imgs["wr"],(promote[2][0]+0.5)*TILESIZE-IMGSIZE/2,1.5*TILESIZE-IMGSIZE/2,IMGSIZE,IMGSIZE);
+        image(imgs["wb"],(promote[2][0]+0.5)*TILESIZE-IMGSIZE/2,2.5*TILESIZE-IMGSIZE/2,IMGSIZE,IMGSIZE);
+        image(imgs["wn"],(promote[2][0]+0.5)*TILESIZE-IMGSIZE/2,3.5*TILESIZE-IMGSIZE/2,IMGSIZE,IMGSIZE);
     } else if (promote[0]==2) {
-        image(imgs["bq"],(promote[2][0]+0.5)*TILESIZE-40,7.5*TILESIZE-40,80,80);
-        image(imgs["br"],(promote[2][0]+0.5)*TILESIZE-40,6.5*TILESIZE-40,80,80);
-        image(imgs["bb"],(promote[2][0]+0.5)*TILESIZE-40,5.5*TILESIZE-40,80,80);
-        image(imgs["bn"],(promote[2][0]+0.5)*TILESIZE-40,4.5*TILESIZE-40,80,80);
+        image(imgs["bq"],(promote[2][0]+0.5)*TILESIZE-IMGSIZE/2,7.5*TILESIZE-IMGSIZE/2,IMGSIZE,IMGSIZE);
+        image(imgs["br"],(promote[2][0]+0.5)*TILESIZE-IMGSIZE/2,6.5*TILESIZE-IMGSIZE/2,IMGSIZE,IMGSIZE);
+        image(imgs["bb"],(promote[2][0]+0.5)*TILESIZE-IMGSIZE/2,5.5*TILESIZE-IMGSIZE/2,IMGSIZE,IMGSIZE);
+        image(imgs["bn"],(promote[2][0]+0.5)*TILESIZE-IMGSIZE/2,4.5*TILESIZE-IMGSIZE/2,IMGSIZE,IMGSIZE);
     }
     mousex=mouseX;mousey=mouseY;
     var hop=0;

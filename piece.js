@@ -240,7 +240,7 @@ class Piece {
     draw() {
         if (this.type!=" ") {
             var thisimg=imgs[this.color+this.type];
-            image(thisimg,(this.px+0.5)*TILESIZE-40,(this.py+0.5)*TILESIZE-40,80,80);
+            image(thisimg,(this.px+0.5)*TILESIZE-IMGSIZE/2,(this.py+0.5)*TILESIZE-IMGSIZE/2,IMGSIZE,IMGSIZE);
         }
     }
 }
